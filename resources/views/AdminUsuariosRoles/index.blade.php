@@ -44,6 +44,7 @@
 @push('css') @endpush
 @push('js')
 <script>
+
     $(document).ready(function() {
 
         $('#pwd').hide();
@@ -213,5 +214,6 @@
 
 
     });
+    
 </script>
 @endpush
