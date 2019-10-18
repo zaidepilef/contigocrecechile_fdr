@@ -1,0 +1,133 @@
+Crear un proyecto
+composer create-project laravel/laravel nombreProyecto
+
+Crear autentificacion
+php artisan make:auth
+
+Crear controladores
+php artisan make:controller Notification/notificacionController
+
+crear la migracion
+php artisan migrate
+
+crear migracion y seed
+php artisan migrate:refresh --seed
+php artisan migrate --seed
+//crear el modelo y la migracion
+php artisan make:model Tabla --migration
+php artisan make:model Region --migration
+
+//crear seed
+php artisan make:seed UserSeeder
+
+crear tablas
+
+php artisan make:migration create_commune_publication_table
+php artisan make:migration create_region_publication_table
+php artisan make:migration create_galleries_table
+
+php artisan make:request Publication\StoreRequest
+
+
+//hijos
+php artisan make:model Child --migration
+
+//periodos
+php artisan make:model Period --migration
+
+//subperiodos
+php artisan make:model Subperiod --migration
+
+//rangos
+php artisan make:model Range --migration
+
+//periodos_subperiodos
+php artisan make:model Range --migration
+
+
+//periodo_subperiodo_contenido
+php artisan make:model Period_subperiod_content --migration
+
+
+
+////User_app
+php artisan make:model User_app --migration
+
+
+
+//contenidos
+php artisan make:model Content --migration
+
+//ejemplos de instert ***************************************************************************************************************************************************
+//insert
+INSERT INTO `children` (`id`, `nombre`, `fecha_nacimiento`, `fecha_concepcion`, `estado`, `created_at`, `updated_at`) VALUES (NULL, 'john', '7-7-2019', '7-7-2019', 'nacio', NULL, NULL);
+INSERT INTO `children` (`id`, `nombre`, `fecha_nacimiento`, `fecha_concepcion`, `estado`, `created_at`, `updated_at`) VALUES (NULL, 'andres', '7-7-2019', '7-7-2019', 'nacio', NULL, NULL);
+
+
+INSERT INTO `periods` (`id`, `nombre`, `url_imagen`, `tipo_periodo`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, 'gestación', 'dsfdsfdsf', 'crecimiento', 'semanas', NULL, NULL);
+INSERT INTO `periods` (`id`, `nombre`, `url_imagen`, `tipo_periodo`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, '0 a 2', 'dsfdsfdsf', 'crecimiento', 'meses', NULL, NULL);
+INSERT INTO `periods` (`id`, `nombre`, `url_imagen`, `tipo_periodo`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, '2 a 3', 'dsfdsfdsf', 'crecimiento', 'año', NULL, NULL);
+INSERT INTO `periods` (`id`, `nombre`, `url_imagen`, `tipo_periodo`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, '4 y mas', 'dsfdsfdsf', 'crecimiento', 'año', NULL, NULL);
+
+INSERT INTO `subperiods` (`id`, `nombre`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, 'semana 1', 'semanas', NULL, NULL)
+INSERT INTO `subperiods` (`id`, `nombre`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, '0 a 3 Meses', 'semanas', NULL, NULL);
+INSERT INTO `subperiods` (`id`, `nombre`, `unidad`, `created_at`, `updated_at`) VALUES (NULL, '4 a 6 Meses', 'semanas', NULL, NULL);
+
+
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '1', '40', '1', NULL, NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '0', '24', '2', NULL, NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '2', '3', '3', NULL, NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '1', '4', '1', '1', NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '5', '5', '1', '2', NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '0', '3', '2', '3', NULL, NULL);
+INSERT INTO `ranges` (`id`, `inicio`, `fin`, `id_periodo`, `id_Subperiodo`, `created_at`, `updated_at`) VALUES (NULL, '4', '6', '2', '4', NULL, NULL);
+*************************************************************************************************************************************************************************
+
+
+
+
+
+
+periodos
+crecimientos --- tiene subperiodos
+
+
+
+
+
+
+vacunas
+controles de gestacion
+controles niño nacido
+
+
+*****************************************************************************************
+$localidad = Commune::select('communes.id','communes.name as commune_name','communes.region_id', 'regions.name')
+          ->join('regions' ,'communes.region_id', 'regions.id')
+          ->where('communes.id', (int)$request['idCommunes'] )
+          ->get()
+
+          dd($localidad);
+
+  $keyword= DB::table('keywords')->select('keywords.publication_id', 'publications.status', 'appreciation')
+                   ->join('publications', 'publications.id', '=', 'keywords.publication_id')
+                   ->join('commune_publication', 'commune_publication.publication_id', '=', 'publications.id')
+                   ->where('commune_publication.commune_id', "=", $idCommunes)
+                   ->where('keywords_unique_id', "=", $key_uni[0])
+                   ->get()->first();
+
+                   eloquent laravel ORM
+
+
+
+
+<form method="post" action="{{route('rutaPost')}}">
+@csrf
+<input name="periodo">
+<input name="subperiodo">
+<form>
+
+public function metodo(Request $request){
+  $request->periodo;
+  Period::save($request->all());
+}
