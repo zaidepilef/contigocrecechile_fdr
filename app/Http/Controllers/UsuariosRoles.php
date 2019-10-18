@@ -76,7 +76,6 @@ class UsuariosRoles extends Controller
                         'ldap' => $on
                     ]);
                     return redirect()->back()->with('mensajes_ok', 'Usuario Guardado');
-
                 } else {
 
                     // si es ldap
@@ -140,19 +139,21 @@ class UsuariosRoles extends Controller
 
 
     ////
-    public function roles(){
+    public function roles()
+    {
         View::share('roles', Rol::all());
-    
+
         View::share('modulos', Modulo::all());
 
         return view('AdminUsuariosRoles.rol');
     }
 
-    public function rolSave(Request $request){
-       
+    public function rolSave(Request $request)
+    {
+
         try {
 
-            $newUser = new User;
+            $newRol = new Rol;
             $resultado = $request::all();
             echo "<pre>";
             print_r($resultado);
@@ -163,66 +164,41 @@ class UsuariosRoles extends Controller
             ]);
 
 
-
             if ($validate->fails()) {
-                // echo"falil";
+
                 return redirect()->back()->withErrors($validate->errors());
             } else {
-                // echo"val";
+
                 // valido
-                $id = $resultado['userid'];
-                $usernombre = $resultado['usernombre'];
-                $userapellido = $resultado['userapellido'];
-                $usermail = $resultado['usermail'];
-                $newusername = $resultado['newusername'];
-                $ldap = $resultado['ldap'];
-                $newuserpass = $resultado['newuserpass'];
-                $newuserpassconfirm = $resultado['newuserpassconfirm'];
-                $userrolid = $resultado['userrolid'];
+                $rolid = $resultado['rolid'];
+                $rolnombre = $resultado['rolnombre'];
+                $roldescripcion = $resultado['roldescripcion'];
+                $newRol->rol_name = $rolnombre;
+                $newRol->rol_description = $roldescripcion;
 
-                $newUser->nombre = $usernombre;
-                $newUser->apellido = $userapellido;
-                $newUser->email = $usermail;
-                $newUser->name = $newusername;
-                $newUser->rol_id = $userrolid;
-
-                if (isset($id)) {
-                    $usuarioup = User::find($id);
-
-                    $on = ($ldap === 'on') ? true : false;
-                    $usuarioup->update([
-                        'nombre' => $usernombre,
-                        'apellido' => $userapellido,
-                        'email' => $usermail,
-                        'name' => $newusername,
-                        'rol_id' => $userrolid,
-                        'ldap' => $on
+                if (isset($rolid)) {
+                    $rolUpdate = Rol::find($rolid);
+                    $rolUpdate->update([
+                        'rol_name' => $rolnombre,
+                        'rol_description' => $roldescripcion
                     ]);
-                    return redirect()->back()->with('mensajes_ok', 'Usuario Guardado');
-
+                    return redirect()->back()->with('mensajes_ok', 'Rol Actualizado');
                 } else {
-
-                    // si es ldap
-                    if ($ldap === 'on') {
-
-                        $newUser->ldap = true;
-                        $newUser->password = md5($newuserpass);
-                        $newUser->save();
-                        return redirect()->back()->with('mensajes_ok', 'Usuario Almacenado');
-                    } else {
-
-                        $newUser->ldap = false;
-
-                        if ($newuserpass === $newuserpassconfirm) {
-                            $newUser->password = md5($newuserpass);
-                            $newUser->save();
-                            return redirect()->back()->with('mensajes_ok', 'Usuario Almacenado');
-                        } else {
-                            return redirect()->back()->withErrors('Passwords no coinciden');
-                        }
-                    }
+                    $newRol->save();
+                    return redirect()->back()->with('mensajes_ok', 'Rol Almacenado');
                 }
             }
+        } catch (ModelNotFoundException $exception) {
+            return back()->withError($exception->getMessage())->withInput();
+        }
+    }
+
+    public function deleteRol($id)
+    {
+        try {
+            $res = Rol::where('id', $id)->delete();
+
+
         } catch (ModelNotFoundException $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }

@@ -33,7 +33,7 @@
                 @if (session('mensajes_ok'))
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
-                    <i class="ti-user"> {{ session('mensajes_ok') }}</i>
+                    {{ session('mensajes_ok') }}
                 </div>
                 @endif
 
@@ -41,7 +41,7 @@
                 <div class="alert alert-danger">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
                     @foreach($errors->all() as $error)
-                    <i class="ti-user"></i>{{$error}}
+                    {{$error}}
                     @endforeach
                 </div>
                 @endif
@@ -101,12 +101,15 @@
 @endsection
 @push('css') @endpush
 @push('js')
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
 
         // BOTON CANCELAR limpair formulario
         $("#btnCancelar").click(function() {
 
+            $('#rolid').val("");
             $('#rolnombreValid').removeClass('has-danger');
             $('#rolnombreFeedBack').text('');
             $("#roldescripcionValid").removeClass('has-danger');
@@ -135,10 +138,78 @@
                 $('#roldescripcionFeedBack').text('Complete Campo Descripcion');
 
             } else {
-                $('#formRol').submit();
+
+                swal({
+                    title: "Guardar Cambios",
+                    text: "Se modificarán datos de rol",
+                    icon: "warning",
+                    buttons: [
+                        'No, cancel it!',
+                        'Yes, I am sure!'
+                    ],
+                    dangerMode: false,
+                }).then(function(isConfirm) {
+                    if (isConfirm) {
+                        $('#formRol').submit();
+                    }
+                })
+
             }
 
         });
+
+        $('div.role').on('click', 'a.edit-rol', function() {
+            //alert('lo tocaste');
+            var rolid = $('#rolid').val();
+            var data = $(this).attr('value');
+            data = JSON.parse(data);
+            console.log(data);
+
+            if (rolid != '') {
+                $('#rolid').val("");
+                $('#rolnombre').val("");
+                $('#roldescripcion').val("");
+            } else {
+                $('#rolid').val(data.id);
+                $('#rolnombre').val(data.rol_name);
+                $('#roldescripcion').val(data.rol_description);
+            }
+
+
+        });
+
+        $('div.role').on('click', 'a.delete-rol', function() {
+            //alert('lo tocaste');
+            var data = $(this).attr('value');
+            data = JSON.parse(data);
+            console.log(data);
+
+
+            swal({
+                title: "Are you sure?",
+                text: "You will not be able to recover this imaginary file!",
+                icon: "warning",
+                buttons: [
+                    'No, cancel it!',
+                    'Yes, I am sure!'
+                ],
+                dangerMode: true,
+            }).then(function(isConfirm) {
+                if (isConfirm) {
+                    swal({
+                        title: 'Shortlisted!',
+                        text: 'Candidates are successfully shortlisted!',
+                        icon: 'success'
+                    }).then(function() {
+                        form.submit(); // <--- submit form programmatically
+                    });
+                } else {
+                    swal("Cancelled", "Your imaginary file is safe :)", "error");
+                }
+            })
+        });
+
+
 
 
     });

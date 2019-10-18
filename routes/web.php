@@ -80,7 +80,7 @@ Route::group(['middleware' => 'permisos'], function () {
     Route::get('/deleteUser', 'UsuariosRoles@deleteUser')->name('deleteUser');
 
     Route::get('/roles', 'UsuariosRoles@roles')->name('roles');
-    Route::get('/rolSave', 'UsuariosRoles@rolSave')->name('rolSave');
+    Route::post('/rolSave', 'UsuariosRoles@rolSave')->name('rolSave');
 
 
     Route::get('/miperfil', 'MiPerfilController@index')->name('miperfil');
