@@ -53,7 +53,7 @@
             <div class="card-body">
                 <h4 class="card-title" id="tituloCrearEditar">Crear Notificaciones</h4>
                 <div id="">
-                    <button style="background:#f56e0a ; border:#f56e0a" id="btncrear" name="action" onclick="nuevoPeriodo()" value="Nuevo Periodo" class="btn btn-info waves-effect waves-light">
+                    <button style="background:#f56e0a ; border:#f56e0a" id="btncrear" name="action" onclick="CrearNotificacion()" value="Nuevo Periodo" class="btn btn-info waves-effect waves-light">
                         <i class="fa fa-plus"></i> Nueva Notificación
                     </button>
                 </div>
@@ -71,7 +71,7 @@
                                 <div class="input-group-addon">
                                     <i class="ti-world"></i>
                                 </div>
-                                <input type="text" class="form-control" id="tituloNotificacion" placeholder="Ingresa un Titulo " name="title" />
+                                <input type="text" class="form-control" id="tituloNotificacion" placeholder="Ingresa un Titulo " name="title" value="{{old('title')}}" />
                             </div>
                         </div>
                     </div>
@@ -83,23 +83,41 @@
                             <div class="input-group-addon">
                                 <i class="ti-world"></i>
                             </div> --}}
-                            <textarea class="form-control" rows="5" name="body"> Mensaje desde laravel </textarea>
+                            <textarea class="form-control" rows="5" name="body"  value="{{old('body')}}"> Mensaje desde laravel </textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="exampleInputEmail3" class="col-sm-3 control-label">Segmentado</label>
+                            <label for="inputPassword4" class="col-sm-3 control-label">Tipo Periodo</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="ti-world"></i>
+                                    </div>
+                                    <select class="form-control custom-select" data-placeholder="Selecciona Tipo periodo" tabindex="1" name="tipo_periodo" id="tipo_periodo" value="{{old('tipo_periodo')}}">
+                                            <option value="" selected="selected">Seleccione Tipo periodo</option>
+                                            @foreach($selectTipoPeriodo as $item)
+                                            <option value="{{ $item[0] }}" {{ (old( "tipo_periodo")==$item[0] ? "selected": "") }}>{{ $item[1] }}</option>
+                                            @endforeach
+                                        </select>
+                                 
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="form-group row">
+                        <label for="exampleInputEmail3" class="col-sm-3 control-label">Masivo</label>
                         <div class="col-sm-9">
                             <div class="btn-group" data-toggle="buttons">
                                 <label class="btn btn-primary" style="background:#f56e0a ; border:#f56e0a">
                                     <div class="custom-control custom-radio">
-                                        <input type="radio" id="RadioSegmentadoSi" name="RadioSegmentado" class="custom-control-input" checked="">
-                                        <label class="custom-control-label" for="RadioSegmentadoSi">Si</label>
+                                        <input type="radio" id="RadioMasivoSi" name="RadioMasivo" class="custom-control-input" checked="">
+                                        <label class="custom-control-label" for="RadioMasivoSi">Si</label>
                                     </div>
                                 </label>
                                 <label class="btn btn-primary active" style="background:#f56e0a ; border:#f56e0a">
                                     <div class="custom-control custom-radio">
-                                        <input type="radio" id="RadioSegmentadoNo" name="RadioSegmentado" class="custom-control-input">
-                                        <label class="custom-control-label" for="RadioSegmentadoNo">No</label>
+                                        <input type="radio" id="RadioMasivoNo" name="RadioMasivo" class="custom-control-input">
+                                        <label class="custom-control-label" for="RadioMasivoNo">No</label>
                                     </div>
                                 </label>
 
@@ -107,6 +125,48 @@
                         </div>
                     </div>
 
+                    <div class="Box">
+                    <div class="form-group row">
+                            <label for="inputPassword4" class="col-sm-3 control-label">Periodo</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="ti-world"></i>
+                                    </div>
+                                    <select class="form-control custom-select " data-placeholder="Selecciona un Periodo" tabindex="1" name="selectPeriodo" id="selectPeriodo">
+                                        <option value="" selected="selected">Seleccione Periodo</option>
+                                        @foreach($periodos as $items)
+                                        <option value="{{ $items->id }}" {{ (old( "divunidad")==$items->id ? "selected": "") }}>{{ $items->nombre}}</option>
+                                        @endforeach
+    
+                                    </select>
+    
+    
+    
+    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                                <label for="inputPassword4" class="col-sm-3 control-label">Sub-Periodo</label>
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="ti-world"></i>
+                                        </div>
+                                        <select class="form-control custom-select " data-placeholder="Selecciona un Sub-Periodo" tabindex="1" name="selectSubPeriodo" id="selectSubPeriodo">
+                                            <option value="" selected="selected">Seleccione Sub-Periodo</option>
+                                          {{--   @foreach($periodos as $items)
+                                            <option value="{{ $items->id }}" {{ (old( "divunidad")==$items->id ? "selected": "") }}>{{ $items->nombre}}</option>
+                                            @endforeach --}}
+        
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <div class="form-group row">
                         <label for="exampleInputEmail3" class="col-sm-3 control-label">Automático</label>
                         <div class="col-sm-9">
@@ -146,96 +206,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="inputPassword4" class="col-sm-3 control-label">Periodo</label>
-                        <div class="col-sm-9">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="ti-world"></i>
-                                </div>
-                                <select class="form-control custom-select " data-placeholder="Selecciona Unidad de rango" tabindex="1" name="divunidad" id="divunidad">
-                                    <option value="" selected="selected">Seleccione Periodo</option>
-
-
-                                   @foreach($periodos as $item)
-                                    <option selected @if(){} value="{{$item->id}}">{{$item->nombre}}</option>
-
-
-                                    <option selected value="{{$item->id}}">{{$item->nombre}}</option>
-
-                                    @endforeach
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputPassword5" class="col-sm-3 control-label">Rango</label>
-                        <div class="col-sm-9">
-                            <div class="row" id="divsemanas" style="display: none;">
-                                <div class="col-md-12">
-
-                                    <div id="range_semanas"></div>
-                                </div>
-                            </div>
-                            <div class="row" id="divmeses" style="display: none;">
-                                <div class="col-md-12">
-                                    <div id="range_meses"></div>
-                                </div>
-                            </div>
-                            <div class="row" id="divanos" style="display: none;">
-                                <div class="col-md-12">
-                                    <div id="range_anos"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" style="display: none;">
-                        {{--
-                        <label for="exampleInputEmail3" class="col-sm-3 control-label">Nombre Periodo</label> --}}
-                        <div class="col-sm-9">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="ti-world"></i>
-                                </div>
-                                <input type="text" class="form-control" id="inicio" placeholder="Texto por defecto" name="inicio" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group row" style="display: none;">
-                        {{--
-                        <label for="exampleInputEmail3" class="col-sm-3 control-label">Nombre Periodo</label> --}}
-                        <div class="col-sm-9">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="ti-world"></i>
-                                </div>
-                                <input type="text" class="form-control" id="fin" name="fin" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row" style="display: none;">
-                        {{--
-                        <label for="exampleInputEmail3" class="col-sm-3 control-label">Nombre Periodo</label> --}}
-                        <div class="col-sm-9">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="ti-world"></i>
-                                </div>
-                                <input type="hidden" class="form-control" id="id_periodo" name="id_periodo" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row m-b-0">
-                        <div class="offset-sm-3 col-sm-9">
+                
+                               
+                    <div class="form-group row ">
+                        <div class="col-sm-3">
                             <div id="divbtncrear">
                                 <button style="background:#f56e0a ; border:#f56e0a" id="btncrear" name="action" type="submit" value="Guardar" class="btn btn-info waves-effect waves-light">
                                     Guardar
                                 </button>
                             </div>
-
+                        </div>
+                            <div class="col-sm-3">
+                            <div id="divbtnenviar">
+                                    <button style="background:#f56e0a ; border:#f56e0a" id="btnenviar" name="action" type="submit" value="Enviar" class="btn btn-info waves-effect waves-light">
+                                        Enviar
+                                    </button>
+                                </div>
+                            </div>
+                                <div class="col-sm-3">
                             <div id="divbtneditar" style="display: none;">
                                 <button style="background:#f56e0a ; border:#f56e0a" id="btneditar" name="action" value="Editar" type="submit" class="btn btn-info waves-effect waves-light">
                                     Editar
@@ -289,4 +277,47 @@
     </div>
 </div>
 
-@endsection @push('css') @endpush @push('js') @endpush
+@endsection @push('css') @endpush 
+
+
+
+
+@push('js')
+
+
+<script>
+        $(document).ready(function(){
+
+
+
+            $('input[type="radio"]').click(function(){
+        if($(this).attr("value")=="ABC"){
+            $(".Box").hide('slow');
+        }
+        if($(this).attr("value")=="PQR"){
+            $(".Box").show('slow');
+
+        }        
+    });
+$('input[type="radio"]').trigger('click');
+
+
+
+
+
+          $("#selectPeriodo").change(function(){          
+            var Periodo = $(this).val();           
+             $.get('subperiodosSelect/'+Periodo, function(data){
+              //esta el la peticion get, la cual se divide en tres partes. ruta,variables y funcion   
+                var producto_select = '<option value="">Seleccione Sub-Periodo</option>'
+                  for (var i=0; i<data.length;i++)
+                    producto_select+='<option value="'+data[i].id+'">'+data[i].nombre+'</option>';
+
+               /*      <option value="{{ $item[0] }}" {{ (old( "tipo_periodo")==$item[0] ? "selected": "") }}>{{ $item[1] }}</option> */
+                  $("#selectSubPeriodo").html(producto_select);
+            }); 
+ 
+          });
+        });
+      </script>
+@endpush

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Period extends Model
 {
     //
-    //protected $tablePeriodos = "datatables_data";
+    protected $primarykey = "id";
     protected $fillable = [
         'nombre',
         'url_imagen',

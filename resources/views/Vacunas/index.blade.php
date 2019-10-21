@@ -1,6 +1,4 @@
-@extends('layouts.appBase') 
-@section('content')
-
+@extends('layouts.appBase') @section('content')
 <div class="row">
         <div class="col-12">
                 <!-- Column -->

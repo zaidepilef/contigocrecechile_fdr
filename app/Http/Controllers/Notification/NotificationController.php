@@ -5,45 +5,72 @@ namespace App\Http\Controllers\Notification;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Period;
+use App\Subperiod;
 
 class NotificationController extends Controller
 {
     public function index()
     {
+
         $periodos = Period::select('periods.id', 'periods.nombre')->get();
-        return view('Notification.index', ['periodos' => $periodos]);
+
+
+
+
+        $selectTipoPeriodo = [];
+        array_push($selectTipoPeriodo, ['crecimiento', 'Crecimiento']);
+        array_push($selectTipoPeriodo, ['control', 'Control']);
+        array_push($selectTipoPeriodo, ['vacunas', 'Vacunas']);
+
+        return view('Notification.index', ['periodos' => $periodos])->with('selectTipoPeriodo', $selectTipoPeriodo);
     }
+
+
+
+    public function subperiodosSelect($id)
+    {
+        /*   dd($id); */
+        return Subperiod::select('subperiods.id', 'subperiods.nombre')
+            ->join('ranges', 'ranges.id_Subperiodo', 'subperiods.id')
+            ->where('ranges.id_periodo', $id)
+            ->get();
+    }
+
 
     public function send(Request $request)
     {
-        //dd($request);
-        //$to = "feHG-Hc6vcY:APA91bFadML1AcAv0lP8NkEeIhTzNE3DqTgymXk5cHGG_BhVTpqSsrAfdcUbK_IAjIJnZugILnZ6H0vEN_Nj7qTfg2D5odV8EYxa9F_cqPW_aVgMeHJQQp6mbrVslD-x-q-qhZAio7FR";
+
+        // $to = "dRKo6IGC6o0:APA91bHOlCm__fHAMmnZjQ73l4SbJy1Hw5EAkQ9ViqWSkEPSLZ2baZ5sJnfTPPJXQFxHPpFVcL2oTaAVgWaj128P70qPxOEDPcrxRuJ8VGMzyfcMNHK9eVJYNhvWRlx5DyzPrVzG01V6";
         $to = "/topics/all";
         $data = array(
             "title" => $request->title,
             "body" => $request->body,
-            "sound" => "default",
-            // "click_action" => "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
+            "click_action" => "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
+
             "collapse_key" => "notificacion_1",
             "icon" => "fcm_push_icon", //White icon Android resource
             "data" => array(
-                "agendar" => "1",
+                "a" => "Mario",
                 "body" => "PortugalVSDenmark"
-
             )
         );
         $dato = array(
-            "title" => $request->title,
-            "body" => $request->body
+            "agendar" => "1",
+            "visible" => "0",
+            "inicio" => "01/02/2019",
+            "fin" => "01/04/2019",
         );
-        //dd($data);
+
+        $fcmNotification = [
+            //'registration_ids' => $tokenList, //multple token array
+            'to'        => $to, //single token
+            'notification' => $data,
+            'data' => $dato
+        ];
+        //API KEY NO CAMBIA NUNCA
         $apiKey = 'AAAAqUvp1yM:APA91bGp25arGN42jQ9hDS66RF3Os3nhJKA6_cuZ5TPfIfi-Rg-0tW6G04qza5aMxLpm4Ttr4Uk0CfOYIauskXlDmAr-Ptzx_0ZtpHT7KEmw_FP_f2-NRgklOdTEFGNaiVbQb1NyFGEo';
-        $fields = array('to' => $to, 'notification' => $data, 'data' => $dato); // a alguien en especifico
-        //$fields = $data;
-        //echo print_r($data);
 
         $headers = array('Authorization:key=' . $apiKey, 'Content-Type: application/json');
-        //echo print_r($headers);
 
         $url = 'https://fcm.googleapis.com/fcm/send';
 
@@ -56,7 +83,8 @@ class NotificationController extends Controller
         //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); //no
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         //echo print_r($fields);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
         //echo $ch;
         $result = curl_exec($ch);
         curl_close($ch);

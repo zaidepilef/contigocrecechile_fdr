@@ -27,8 +27,8 @@
             <div class="card-body little-profile text-center">
                 <h3 class="m-b-0">Subperiodos De <a style="color:#f56e0a">{{$periodo->nombre}}</a></h3>
                 @foreach ($periodo->rangos as $perio)
-                <input type="text" style="display: block;" id="ininioPeriodo" name="ininioPeriodo" value="{{$perio->inicio}}"/>
-                <input type="text" style="display: block;"  id="finPeriodo" name="finPeriodo" value="{{$perio->fin}}"/>
+                <input type="hidden" style="display: block;" id="ininioPeriodo" name="ininioPeriodo" value="{{$perio->inicio}}"/>
+                <input type="hidden" style="display: block;"  id="finPeriodo" name="finPeriodo" value="{{$perio->fin}}"/>
                  @endforeach
             </div>
         </div>
@@ -58,11 +58,23 @@
         <!-- Column -->
         <div class="card">
                 <div class="card-body">
-                        <h4 class="card-title">Crear Sub-Periodo</h4>
+                       
+                        <h4 class="card-title" id="tituloCrearEditar">Crear Sub-Periodo</h4>
+                        <div id="btncrear">
+                 {{--            <button style="background:#f56e0a ; border:#f56e0a" id="btncrear" name="action" onclick="nuevoPeriodo()" value="Nuevo Sub-Periodo" class="btn btn-info waves-effect waves-light">
+                                <i class="fa fa-plus"></i> Nuevo Sub-Periodo
+                            </button> --}}
+                            <a  style="background:#f56e0a ; border:#f56e0a ;color:#ffffff"  name="action" value="Nuevo Sub-Periodo" class="bclasscrear btn btn-info waves-effect waves-light">
+                                    <i class="fa fa-plus" ></i> Nuevo Sub-Periodo 
+                                </a >
 
-                        <h6 class="card-subtitle">
+                          {{--   <a class="edit-modal btn btn-info" data-toggle="tooltip" data-original-title="Editar" style="font-family: Poppins, sans-serif;" >
+                                    <i class="fa fa-plus"></i> Nuevo Sub-Periodo
+                                </a> --}}
+                        </div>
+                     {{--    <h6 class="card-subtitle">
                            Ingresa todos los datos del formulario para crear un nuevo Sub Periodo
-                        </h6>
+                        </h6> --}}
 
                         <form class="form-horizontal p-t-20" method="POST"  action="{{ route('crearSubperiodo') }}">
                             @csrf
@@ -141,6 +153,28 @@
                                                     value="{{$periodo->id}}"/>
                                             </div>
                                         </div>
+
+                                        <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">
+                                                        <i class="ti-world"></i>
+                                                    </div>
+                                                    <input type="hidden" class="form-control" id="id_rango" name="id_rango" />
+                    
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-9">
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">
+                                                            <i class="ti-world"></i>
+                                                        </div>
+                                                        <input type="hidden" class="form-control" id="id_subperiodo" name="id_subperiodo" />
+                        
+                                                    </div>
+                                                </div>
+    
+
                                     </div>
                             <div class="form-group row" style="display: none;">
 
@@ -176,11 +210,18 @@
                                 </div>
                             <div class="form-group row m-b-0">
                                 <div class="offset-sm-3 col-sm-9">
-                                    <button style="background:#f56e0a ; border:#f56e0a"
-                                        type="submit"
-                                        class="btn btn-info waves-effect waves-light">
-                                        Guardar
-                                    </button>
+                                        <div id="divbtncrear">
+                                                <button style="background:#f56e0a ; border:#f56e0a" id="btncrear" name="action" type="submit" value="Guardar" class="btn btn-info waves-effect waves-light">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                
+                                            <div id="divbtneditar" style="display: none;">
+                                                <button style="background:#f56e0a ; border:#f56e0a" id="btneditar" name="action" value="Editar" type="submit" class="btn btn-info waves-effect waves-light">
+                                                    Editar
+                                                </button>
+                                            </div>
+                
                                 </div>
                             </div>
                         </form>
@@ -228,11 +269,16 @@
                             >
                             Nombre
                             </th>
-
                             <th>
-                            Acciones
-                            </th>
-
+                                    Unidad
+                                    </th>
+                          
+                            <th>
+                                    Rango
+                                    </th>
+                                    <th>
+                                            Acciones
+                                    </th>
                         </tr>
                     </thead>
 
@@ -244,12 +290,26 @@
 
                                 <td>{{$item->id}}</td>
                                  <td>{{$item->nombre}}</td>
+                                 <td>{{$item->unidad}}</td>
+
+
+                           {{--  @if($item->inicio==$item->fin){<td>{{$item->inicio}}</td>}
+                            @else{ <td>{{$item->inicio}} -{{$item->fin}}</td> --}}
+                            <td>{{$item->inicio}} -{{$item->fin}}</td>
+                                
                                 <td>
                                         <form method="POST">
                                             @csrf
-                                            <a class="edit-modal btn btn-info" data-toggle="tooltip" data-original-title="Editar" onclick="editarSubPeriodo({{$item}})" value="Editar">
+                                          {{--   <a class="edit-modal btn btn-info" data-toggle="tooltip" data-original-title="Editar" onclick="editarSubPeriodo({{$item}})" value="Editar">
                                                 <span class="fa fa-edit" style="color:white"></span>
-                                            </a>
+                                            </a> --}}
+
+
+                                            <a class="edit-modal btn btn-info" data-toggle="tooltip" data-original-title="Editar" value="{{$item}}" id="{{$item->id}}">
+                                                    <span class="fa fa-edit" style="color:white"></span>
+                                                </a>
+
+
                                             <button class="delete-modal btn btn-danger" data-toggle="tooltip" data-original-title="Eliminar" type="submit" name="action"  value="Eliminar">
                                                 <span class="fa  fa-trash-o"></span>
                                             </button>
@@ -312,6 +372,75 @@ var tablePeriodos = $('#tableSubPeriodos').DataTable({
 
 
         //en la pagina periodos , con el combo semanas oculto o muestro slides de rangos y agrego valores de inicio y fin por defecto
+      
+        $("#range_semanas").ionRangeSlider({
+            type: "double",
+            grid: true,
+            min: $("#ininioPeriodo").val(),
+            max:  $("#finPeriodo").val(),
+          /*   from:0,
+            to:400, */
+            prefix: "semana ",
+            onStart: function(data) {
+                $('#inicio').val(data.min);
+                $('#fin').val(data.max);
+            },
+            onChange: function(data) {
+                $('#inicio').val(data.from);
+                $('#fin').val(data.to);
+            },
+            onUpdate: function(data) {},
+        });
+
+        // Saving it's instance to var
+        var range_semanas = $("#range_semanas").data("ionRangeSlider");
+        range_semanas.reset();
+
+        $("#range_meses").ionRangeSlider({
+            type: "double",
+            grid: true,
+            min: 0,
+            max: 108,
+          /*   from:0,
+            to:400, */
+            prefix: "mes ",
+            onStart: function(data) {
+                $('#inicio').val(data.min);
+                $('#fin').val(data.max);
+            },
+            onChange: function(data) {
+                $('#inicio').val(data.from);
+                $('#fin').val(data.to);
+            },
+            onUpdate: function(data) {},
+        });
+
+        var range_meses = $("#range_meses").data("ionRangeSlider");
+        range_meses.reset();
+
+        $("#range_anos").ionRangeSlider({
+            type: "double",
+            grid: true,
+            min: 0,
+            max: 9,
+           /*   from: 0,
+             to: 9, */
+            prefix: "año ",
+            onStart: function(data) {
+                $('#inicio').val(data.min);
+                $('#fin').val(data.max);
+            },
+            onChange: function(data) {
+                $('#inicio').val(data.from);
+                $('#fin').val(data.to);
+            },
+            onUpdate: function(data) {},
+        });
+
+        var range_anos = $("#range_anos").data("ionRangeSlider");
+        range_anos.reset();
+
+        //en la pagina periodos , con el combo semanas oculto o muestro slides de rangos
         $("#divunidad").change(function() {
 
             if ($("#divunidad option:selected").val() == "semana") {
@@ -319,90 +448,98 @@ var tablePeriodos = $('#tableSubPeriodos').DataTable({
                 $("#divmeses").hide();
                 $("#divanos").hide();
 
-                $('#inicio').val(0);
-                $('#fin').val(40);
-
             } else if ($("#divunidad option:selected").val() == "mes") {
                 $("#divsemanas").hide();
                 $("#divmeses").show();
                 $("#divanos").hide();
-                $('#inicio').val(0);
-                $('#fin').val(108);
+               /*  $('#inicio').val(0);
+                $('#fin').val(108); */
             } else if ($("#divunidad option:selected").val() == "año") {
                 $("#divsemanas").hide();
                 $("#divmeses").hide();
                 $("#divanos").show();
-                $('#inicio').val(0);
-                $('#fin').val(9);
+              /*   $('#inicio').val(0);
+                $('#fin').val(9); */
+            }
+
+        });
+
+     
+                
+              
+        
+        //boton editar
+        $('td').on('click', 'a.edit-modal', function() {
+
+            alert("llegue");
+            var data = $(this).attr('value');
+            data = JSON.parse(data);
+
+            $('#divbtncrear').hide();
+            $('#divbtneditar').show();
+            $('#tituloCrearEditar').text("Editar Periodo");
+            $('#nombre').val(data.nombre);
+            $('#tipo_periodo').val(data.tipo_periodo);
+            if(data.unidad=="año"){ $('#divunidad').val("ano");}else{ $('#divunidad').val(data.unidad);}
+
+            $('#id_periodo').val(data.id_periodo);
+            $('#id_subperiodo').val(data.id);
+            
+   /*          //se setea los rangos
+            var inicio;
+            var fin;
+            jQuery.each(data.rango, function(i, val) {
+                inicio = val.inicio;
+                fin = val.fin;
+                $('#id_rango').val(val.id);
+            });
+
+alert(data.fin); */
+            $('#inicio').val(data.inicio);
+            $('#fin').val(data.fin);
+            $('#id_rango').val(data.id_rango    );
+
+            if (data.unidad == "semana") {
+                $("#divsemanas").show();
+                $("#divmeses").hide();
+                $("#divanos").hide();
+
+                range_semanas.update({
+                    from: $('#inicio').val(),
+                    to: $('#fin').val(),
+                });
+                range_semanas.reset();
+
+            } else if (data.unidad == "mes") {
+                $("#divsemanas").hide();
+                $("#divmeses").show();
+                $("#divanos").hide();
+
+                range_meses.update({
+                    from: $('#inicio').val(),
+                    to: $('#fin').val(),
+                });
+                range_meses.reset();
+            } else if (data.unidad == "año") {
+                $("#divsemanas").hide();
+                $("#divmeses").hide();
+                $("#divanos").show();
+
+                range_anos.update({
+                    from: $('#inicio').val(),
+                    to: $('#fin').val(),
+                });
+                range_anos.reset();
+
             }
         });
 
-        var $range_semanas = $("#range_semanas");
-        $range_semanas.ionRangeSlider({
-            type: "double",
-            grid: true,
-            min: $('#ininioPeriodo').val(),
-            max: $('#finPeriodo').val(),
-            prefix: "semana ",
+       
 
-            onStart: function(data) {
-            },
-            onChange: function(data) {
-                console.log(data);
-            },
-        });
-        /*  $range_semanas.update({
-         from: 0,
-         to: 40
-        }); */
-        $range_semanas.on("change", function() {
-            var $inp = $(this);
-            var v = $inp.prop("value"); // input value in format FROM;TO
-            var from = $inp.data("from"); // input data-from attribute
-            var to = $inp.data("to"); // input data-to attribute
-            $('#inicio').val(from);
-            $('#fin').val(to); // all values
-        });
-
-        $("#range_meses").ionRangeSlider({
-            type: "double",
-            grid: true,
-            min: 0,
-            max: 108,
-            /*   from: 200,
-              to: 800, */
-            prefix: "mes "
-        });
-
-        $("#range_anos").ionRangeSlider({
-            type: "double",
-            grid: true,
-            min: 0,
-            max: 9,
-            /*  from: 200,
-             to: 800, */
-            prefix: "año "
-        });
-
-        $('#url_imagen').dropify({
-            "messages": {
-                default: 'Arrastre un archivo o haga clic aquí',
-                replace: 'Arrastre un archivo o haga clic en reemplazar',
-                remove: 'Eliminar',
-                error: 'Lo sentimos, el archivo demasiado grande'
-            }
-        });
-
-    });
-
-
-
-
-
-    function nuevoPeriodo() {
-        $('#divbtncrear').show();
+        $('div').on('click', 'a.bclasscrear', function() {
+            $('#divbtncrear').show();
         $('#divbtneditar').hide();
-        $('#tituloCrearEditar').text("Crear Periodo");
+        $('#tituloCrearEditar').text("Crear Sub-Periodo");
         $('#nombre').val("");
         $('#tipo_periodo').val("");
         $('#divunidad').val("");
@@ -412,83 +549,39 @@ var tablePeriodos = $('#tableSubPeriodos').DataTable({
         $("#divsemanas").hide();
         $("#divmeses").hide();
         $("#divanos").hide();
-        var drEvent = $('#url_imagen').dropify();
-        drEvent = drEvent.data('dropify');
-        drEvent.resetPreview();
-        drEvent.clearElement();
+        range_anos.reset();
+     /*     range_semanas.destroy(); */
+        
+        });
+
+
+
+    });
+
+    function nuevoPeriodo() {
+     /*    $('#divbtncrear').show();
+        $('#divbtneditar').hide();
+        $('#tituloCrearEditar').text("Crear Sub-Periodo");
+        $('#nombre').val("");
+        $('#tipo_periodo').val("");
+        $('#divunidad').val("");
+        $('#url_imagen').val("");
+        $('#inicio').val("");
+        $('#fin').val("");
+        $("#divsemanas").hide();
+        $("#divmeses").hide();
+        $("#divanos").hide();
+         range_semanas.destroy(); */
+        /*   var drEvent = $('#url_imagen').dropify();
+          drEvent = drEvent.data('dropify');
+          drEvent.resetPreview();
+          drEvent.clearElement(); */
         /*    drEvent.destroy();
         drEvent.init(); */
-    }
 
-    function editarSubPeriodo(data) {
-
-
-
-
-
-
-
-        $('#divbtncrear').hide();
-        $('#divbtneditar').show();
-        $('#tituloCrearEditar').text("Editar Periodo");
-        $('#nombre').val(data.nombre);
-        $('#tipo_periodo').val(data.tipo_periodo);
-        $('#divunidad').val(data.unidad);
-        $('#id_periodo').val(data.id);
-
-        //se setea los rangos
-        var inicio;
-        var fin;
-        jQuery.each(data.rango, function(i, val) {
-            inicio = val.inicio;
-            fin = val.fin;
-        });
-        if (data.unidad == "semana") {
-            $("#divsemanas").show();
-            $("#divmeses").hide();
-            $("#divanos").hide();
-            $('#inicio').val(inicio);
-            $('#fin').val(fin);
-            var $range_semanas = $("#range_semanas");
-
-            /*  range_semanas.destroy(); */
-            $range_semanas.ionRangeSlider({
-                type: "double",
-                grid: true,
-                min: 0,
-                max: 40,
-                prefix: "semana ",
-                from: inicio,
-                to: fin,
-            });
-
-        } else if (data.unidad == "mes") {
-            $("#divsemanas").hide();
-            $("#divmeses").show();
-            $("#divanos").hide();
-            $('#inicio').val(inicio);
-            $('#fin').val(fin);
-        } else if (data.unidad == "año") {
-            $("#divsemanas").hide();
-            $("#divmeses").hide();
-            $("#divanos").show();
-            $('#inicio').val(inicio);
-            $('#fin').val(fin);
-        }
-
-        //se configura el input file--falta terminar
-        console.log(data.url_imagen);
-        var imagenUrl = "";
-        var drEvent = $('#url_imagen').dropify({
-            /*   defaultFile:'data:image/png;base64,'+ data.url_imagen */
-        });
-        drEvent = drEvent.data('dropify');
-        drEvent.resetPreview();
-        drEvent.clearElement();
-        drEvent.settings.defaultFile = 'data:image/png;base64,' + data.url_imagen;
-        drEvent.destroy();
-        drEvent.init();
-
+         /*    $("#url_imagen").val('');
+            $("#labelurl_imagen").text('Selecciona una Imagen');
+            $("#previewHolder").attr('src','/assets/images/no-image.jpg'); */
     }
 </script>
 
