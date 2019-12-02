@@ -155,9 +155,9 @@ class UsuariosRoles extends Controller
 
             $newRol = new Rol;
             $resultado = $request::all();
-            echo "<pre>";
-            print_r($resultado);
-            echo "</pre>";
+            //echo "<pre>";
+            //print_r($resultado);
+            //echo "</pre>";
             $validate = Validator::make($resultado, [
                 'rolnombre' => 'required|string|max:255',
                 'roldescripcion' => 'required|string|max:255',

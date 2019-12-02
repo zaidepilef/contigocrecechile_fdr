@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Rol;
+use App\RolesModulos;
+use App\Modulo;
 use PhpParser\Node\Stmt\TryCatch;
 use Request;
 use Session;
@@ -47,7 +49,7 @@ class LoginController extends Controller
                     */
 
                     if ($resp_ldap === 'OK') {
-                        
+
                         Session::put('username', $usuario->name);
                         Session::put('userapellido', $usuario->apellido);
                         Session::put('usernombre', $usuario->nombre);
@@ -68,6 +70,9 @@ class LoginController extends Controller
                         Session::put('usernombre', $usuario->nombre);
                         Session::put('usermail', $usuario->email);
                         Session::put('userrol', $usuario->rol_id);
+
+                        $accesosUsuarios = $this->accesosUsuario();
+
 
                         return redirect('/');
                     } else {
@@ -91,16 +96,16 @@ class LoginController extends Controller
         try {
 
             $rol = Rol::where('id', $rolid)->first();
-            
-             Session::put('idrolusuario', $rol->id);
-             Session::put('nombrerolusuario', $rol->rol_name);
-             Session::put('descripcionrolusuario', $rol->rol_descripcion);
 
+            Session::put('idrolusuario', $rol->id);
+            Session::put('nombrerolusuario', $rol->rol_name);
+            Session::put('descripcionrolusuario', $rol->rol_descripcion);
         } catch (ModelNotFoundException $exception) {
 
             return back()->withError($exception->getMessage())->withInput();
         }
     }
+
 
     public function VerifyLdap($userLdap, $passLdap)
     {
@@ -145,7 +150,6 @@ class LoginController extends Controller
     }
 
 
-
     public function out()
     {
 
@@ -154,4 +158,37 @@ class LoginController extends Controller
         Session::forget('userrol');
         return redirect('/');
     }
+
+
+    public function accesosUsuario()
+    {
+
+        //print_r($roles);
+        /*
+        $rolIdUsuario = session('userrol');
+        $rolNombreUsuario = session('nombrerolusuario');
+        $modulosUsuario = RolesModulos::select('rol_id','module_id')->where('rol_id', $rolIdUsuario)->get();
+        */
+        //      echo "<pre>";
+        //print_r($rolIdUsuario);
+        //echo "<br>";
+        //print_r($rolNombreUsuario);
+        //echo "<br>";
+        // print_r($modulosUsuario);
+        //    echo "</pre>";
+
+        /*
+        foreach($modulosUsuario as $item){
+            //$_mod = $item->module_id;
+            //print_r($item->rol_id);
+            $_mod = $item->module_id;
+            // echo "<br> rol : ".$_mod;
+            // Range::select('ranges.id', 'ranges.inicio', 'ranges.fin')->where('ranges.id_periodo', $period['id'])
+            $rol = Modulo::select('id','module_name','module_description')->where('id',$_mod)->get();
+            echo "<br> rol : ".$rol;
+        }    
+        */ 
+    }
+
+    
 }
