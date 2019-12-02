@@ -67,15 +67,21 @@ class UsuariosRoles extends Controller
                     $usuarioup = User::find($id);
 
                     $on = ($ldap === 'on') ? true : false;
-                    $usuarioup->update([
-                        'nombre' => $usernombre,
-                        'apellido' => $userapellido,
-                        'email' => $usermail,
-                        'name' => $newusername,
-                        'rol_id' => $userrolid,
-                        'ldap' => $on
-                    ]);
-                    return redirect()->back()->with('mensajes_ok', 'Usuario Guardado');
+
+                    if ($newuserpass === $newuserpassconfirm) {
+                        $usuarioup->update([
+                            'nombre' => $usernombre,
+                            'apellido' => $userapellido,
+                            'email' => $usermail,
+                            'name' => $newusername,
+                            'password' => md5($newuserpass),
+                            'rol_id' => $userrolid,
+                            'ldap' => $on
+                        ]);
+                        return redirect()->back()->with('mensajes_ok', 'Usuario Guardado');
+                    } else { 
+                        return redirect()->back()->withErrors('Passwords no coinciden');
+                    }
                 } else {
 
                     // si es ldap
@@ -197,8 +203,6 @@ class UsuariosRoles extends Controller
     {
         try {
             $res = Rol::where('id', $id)->delete();
-
-
         } catch (ModelNotFoundException $exception) {
             return back()->withError($exception->getMessage())->withInput();
         }

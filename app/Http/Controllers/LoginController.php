@@ -107,6 +107,7 @@ class LoginController extends Controller
     }
 
 
+    // VERIFICACION DE LDAP SE COMENTA PARA LA POSTERIOR IMPLEMENTACION
     public function VerifyLdap($userLdap, $passLdap)
     {
 
